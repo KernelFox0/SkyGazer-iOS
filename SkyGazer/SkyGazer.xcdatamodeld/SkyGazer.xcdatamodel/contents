@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="24G222" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="1">
+    <entity name="Account" representedClassName="Account" syncable="YES" codeGenerationType="class">
+        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="handle" optional="YES" attributeType="String"/>
+        <attribute name="pds" optional="YES" attributeType="String"/>
+        <relationship name="drafts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Draft" inverseName="byAccount" inverseEntity="Draft"/>
+    </entity>
+    <entity name="Draft" representedClassName="Draft" parentEntity="Account" syncable="YES" codeGenerationType="class">
+        <attribute name="dateSaved" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="draftedForError" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="embedJson" optional="YES" attributeType="Binary"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="textContent" optional="YES" attributeType="String"/>
+        <relationship name="byAccount" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Account" inverseName="drafts" inverseEntity="Account"/>
+    </entity>
+</model>

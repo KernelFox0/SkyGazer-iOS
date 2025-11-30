@@ -1,0 +1,24 @@
+{
+  "originHash" : "e9598dbb2208606ce62d2dbc77905586a0a86246820c4065793e9c0bac8a28ce",
+  "pins" : [
+    {
+      "identity" : "atprotokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MasterJ93/ATProtoKit.git",
+      "state" : {
+        "revision" : "257709911186e5cf08d4671a0ee74b73a6de8fd8",
+        "version" : "0.32.4"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "ce592ae52f982c847a4efc0dd881cc9eb32d29f2",
+        "version" : "1.6.4"
+      }
+    }
+  ],
+  "version" : 3
+}
