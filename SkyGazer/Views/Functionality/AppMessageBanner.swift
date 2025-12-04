@@ -19,9 +19,11 @@ extension View {
 struct AppMessageBanner: View {
 	@Binding var appError: (any AnyAppError)?
 	@Binding var appMessage: (any AnyAppMessage)?
+	
 	@State private var showBannerMode: Int = 0 // 0 - nothing, 1 - message, 2 - error
 	@State private var dismissTask: Task<Void, Never>? = nil
 	@State private var showErrorDetailsAlert: Bool = false
+	@State private var closingOffset: CGFloat = 0
 	
 	var body: some View {
 		Group {
@@ -35,12 +37,35 @@ struct AppMessageBanner: View {
 					.zIndex(1)
 			}
 		}
+		.simultaneousGesture(
+			DragGesture()
+				.onChanged { value in
+					let height = value.translation.height.maximum(10)
+					
+					withAnimation {
+						closingOffset = height
+					}
+				}
+				.onEnded { value in
+					let height = value.translation.height.maximum(10)
+					
+					withAnimation {
+						if height < -50 {
+							dismissTask?.cancel()
+							showBannerMode = 0
+						}
+						closingOffset = 0
+					}
+				}
+		)
+		.offset(y: closingOffset)
 		.alert((appError?.type.name() ?? "Error"), isPresented: $showErrorDetailsAlert, actions: {
 			if let actionedError = appError as? ActionedAppError {
 				Button(actionedError.actionTitle) {
 					if showBannerMode != 0 {
 						withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
 							showBannerMode = 0
+							closingOffset = 0
 						}
 					}
 					actionedError.action()
@@ -50,6 +75,7 @@ struct AppMessageBanner: View {
 				if showBannerMode != 0 {
 					withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
 						showBannerMode = 0
+						closingOffset = 0
 					}
 				}
 			}
@@ -123,6 +149,7 @@ struct AppMessageBanner: View {
 			}
 			.frame(maxWidth: .infinity, minHeight: 70)
 			.glassEffect(.clear.tint(.blue).interactive(), in: ContainerRelativeShape())
+			.contentShape(ContainerRelativeShape())
 		}
 		.padding(.horizontal)
 	}
@@ -155,6 +182,7 @@ struct AppMessageBanner: View {
 			}
 			.frame(maxWidth: .infinity, minHeight: 70)
 			.glassEffect(.clear.tint(.red).interactive(), in: ContainerRelativeShape())
+			.contentShape(ContainerRelativeShape())
 		}
 		.padding(.horizontal)
 		.onTapGesture {
@@ -180,6 +208,7 @@ struct AppMessageBanner: View {
 				if showBannerMode != 0 {
 					withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
 						showBannerMode = 0
+						closingOffset = 0
 					}
 				}
 				showErrorDetailsAlert = false
