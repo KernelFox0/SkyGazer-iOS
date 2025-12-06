@@ -11,6 +11,8 @@ struct MinimalPostView: View {
 	@State var post: RecordPost
 	let embedRecord: EmbedRecord?
 	
+	@State private var urlViewer: IdentifiableURL? = nil
+	
 	@Environment(PreferenceManager.self) private var preferenceManager
 	
 	init(recordPost post: RecordPost) {
@@ -56,7 +58,7 @@ struct MinimalPostView: View {
 				UserLabelsView(labels: post.postAuthor.userLabels)
 				if !post.text.isEmpty {
 					AttributedBskyTextView(post.text, facets: post.facets, accentColor: preferenceManager.accentColor, font: .subheadline) { url in
-						print("Link: \(url)")
+						urlViewer = IdentifiableURL(url: url)
 					} onHandleTap: { handle in
 						print("Handle: \(handle)")
 					} onTagTap: { tag in
@@ -69,6 +71,10 @@ struct MinimalPostView: View {
 				}
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
+		}
+		.fullScreenCover(item: $urlViewer) { url in
+			SafariView(url: url.url)
+				.ignoresSafeArea()
 		}
 	}
 	
@@ -152,6 +158,7 @@ struct PostView<P: AnyPost>: View {
 	@State var post: P
 	
 	@State private var showDespiteContentLabel: Bool = false
+	@State private var urlViewer: IdentifiableURL? = nil
 	
 	@Environment(PreferenceManager.self) private var preferenceManager
 	
@@ -165,7 +172,7 @@ struct PostView<P: AnyPost>: View {
 					if (post.labels.moderationLabels?.first(where: { $0.visibility == .blur }) == nil && post.labels.selfLabels?.isEmpty != false) || showDespiteContentLabel {
 						if !post.text.isEmpty {
 							AttributedBskyTextView(post.text, facets: post.facets, accentColor: preferenceManager.accentColor, font: .subheadline) { url in
-								print("Link: \(url)")
+								urlViewer = IdentifiableURL(url: url)
 							} onHandleTap: { handle in
 								print("Handle: \(handle)")
 							} onTagTap: { tag in
@@ -192,6 +199,10 @@ struct PostView<P: AnyPost>: View {
 				}
 				.frame(maxWidth: .infinity, alignment: .leading)
 			}
+		}
+		.fullScreenCover(item: $urlViewer) { url in
+			SafariView(url: url.url)
+				.ignoresSafeArea()
 		}
 	}
 	

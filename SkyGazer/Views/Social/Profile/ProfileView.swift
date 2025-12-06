@@ -16,6 +16,7 @@ struct ProfileView: View {
 	@State private var userPictureViewerOpened: Bool = false
 	@State private var showTextSelector: Bool = false
 	@State private var translatorItem: IdentifiableURL? = nil
+	@State private var urlViewer: IdentifiableURL? = nil
 	
 	@Environment(PreferenceManager.self) private var preferenceManager
 	@Environment(AppMessageManager.self) private var appMessageManager
@@ -87,6 +88,10 @@ struct ProfileView: View {
 						.padding()
 					}
 			}
+			.fullScreenCover(item: $urlViewer) { url in
+				SafariView(url: url.url)
+					.ignoresSafeArea()
+			}
 		}
 	}
 	
@@ -154,7 +159,7 @@ struct ProfileView: View {
 		.padding(.top, 5)
 		if !user.bioText.isEmpty {
 			AttributedBskyTextView(user.bioText, facets: user.bioFacets, accentColor: preferenceManager.accentColor, font: .footnote) { url in
-				print("Link: \(url)")
+				urlViewer = IdentifiableURL(url: url)
 			} onHandleTap: { handle in
 				print("Handle: \(handle)")
 			} onTagTap: { tag in
