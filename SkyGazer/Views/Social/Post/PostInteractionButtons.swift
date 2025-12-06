@@ -185,7 +185,7 @@ struct PostInteractionButtons<P: InteractablePost>: View {
 			if !post.text.isEmpty {
 				Button {
 					if let url = URL(string: "https://translate.google.com/?sl=auto&tl=\(Locale.current.language.languageCode?.identifier ?? "en")&text=\(post.text)&op=translate") {
-						translatorItem = IdentifiableURL(url: url)
+						translatorItem = url.identified()
 					}
 				} label: {
 					Label("Translate", systemImage: "character.bubble")

@@ -159,7 +159,7 @@ struct ProfileView: View {
 		.padding(.top, 5)
 		if !user.bioText.isEmpty {
 			AttributedBskyTextView(user.bioText, facets: user.bioFacets, accentColor: preferenceManager.accentColor, font: .footnote) { url in
-				urlViewer = IdentifiableURL(url: url)
+				urlViewer = url.identified()
 			} onHandleTap: { handle in
 				print("Handle: \(handle)")
 			} onTagTap: { tag in
@@ -358,7 +358,7 @@ struct ProfileView: View {
 			if !user.bioText.isEmpty {
 				Button {
 					if let url = URL(string: "https://translate.google.com/?sl=auto&tl=\(Locale.current.language.languageCode?.identifier ?? "en")&text=\(user.bioText)&op=translate") {
-						translatorItem = IdentifiableURL(url: url)
+						translatorItem = url.identified()
 					}
 				} label: {
 					Label("Translate bio", systemImage: "character.bubble")

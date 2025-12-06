@@ -58,7 +58,7 @@ struct MinimalPostView: View {
 				UserLabelsView(labels: post.postAuthor.userLabels)
 				if !post.text.isEmpty {
 					AttributedBskyTextView(post.text, facets: post.facets, accentColor: preferenceManager.accentColor, font: .subheadline) { url in
-						urlViewer = IdentifiableURL(url: url)
+						urlViewer = url.identified()
 					} onHandleTap: { handle in
 						print("Handle: \(handle)")
 					} onTagTap: { tag in
@@ -172,7 +172,7 @@ struct PostView<P: AnyPost>: View {
 					if (post.labels.moderationLabels?.first(where: { $0.visibility == .blur }) == nil && post.labels.selfLabels?.isEmpty != false) || showDespiteContentLabel {
 						if !post.text.isEmpty {
 							AttributedBskyTextView(post.text, facets: post.facets, accentColor: preferenceManager.accentColor, font: .subheadline) { url in
-								urlViewer = IdentifiableURL(url: url)
+								urlViewer = url.identified()
 							} onHandleTap: { handle in
 								print("Handle: \(handle)")
 							} onTagTap: { tag in
