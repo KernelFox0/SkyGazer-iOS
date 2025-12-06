@@ -104,6 +104,7 @@ struct MinimalPostView: View {
 				Text(name)
 					.font(.subheadline)
 					.fontWeight(.semibold)
+				VerificationBadgeView(verified: post.postAuthor.verified)
 			}
 			
 			let hasName: Bool = post.postAuthor.name != nil && (post.postAuthor.name?.isEmpty == false)
@@ -112,6 +113,9 @@ struct MinimalPostView: View {
 				.font(hasName ? .footnote : .subheadline)
 				.fontWeight(hasName ? .light : .semibold)
 				.foregroundStyle(hasName ? .secondary : .primary)
+			if !hasName {
+				VerificationBadgeView(verified: post.postAuthor.verified)
+			}
 			Group {
 				Text("•")
 				Text(post.creationDate.getSimpleTimeSince())
@@ -242,6 +246,7 @@ struct PostView<P: AnyPost>: View {
 					Text(name)
 						.font(.subheadline)
 						.fontWeight(.semibold)
+					VerificationBadgeView(verified: post.postAuthor.verified)
 				}
 				
 				let hasName: Bool = post.postAuthor.name != nil && (post.postAuthor.name?.isEmpty == false)
@@ -250,6 +255,9 @@ struct PostView<P: AnyPost>: View {
 					.font(hasName ? .footnote : .subheadline)
 					.fontWeight(hasName ? .light : .semibold)
 					.foregroundStyle(hasName ? .secondary : .primary)
+				if !hasName {
+					VerificationBadgeView(verified: post.postAuthor.verified)
+				}
 				Group {
 					Text("•")
 					Text(post.CreationDate.getSimpleTimeSince())

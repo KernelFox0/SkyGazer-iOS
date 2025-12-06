@@ -121,15 +121,21 @@ struct ProfileView: View {
 	@ViewBuilder
 	private func profileDetails(_ user: User) -> some View {
 		if let name = user.name {
-			Text(name)
-				.font(.title3)
-				.fontWeight(.medium)
+			HStack {
+				Text(name)
+					.font(.title3)
+					.fontWeight(.medium)
+				VerificationBadgeView(verified: user.verified)
+			}
 		}
 		HStack(spacing: 7) {
 			Text("@\(user.handle)")
 				.font(user.name != nil ? .subheadline : .title3)
 				.fontWeight(user.name != nil ? .regular : .medium)
 				.foregroundStyle(user.name != nil ? .secondary : .primary)
+			if user.name == nil {
+				VerificationBadgeView(verified: user.verified)
+			}
 			if user.isFollowedBy {
 				Text("Follows you")
 					.font(.subheadline)
@@ -528,18 +534,26 @@ struct CompactProfileView: View {
 	var body: some View {
 		if let user {
 			VStack {
-				HStack() {
+				HStack {
 					profilePicture
 					VStack(alignment: .leading) {
 						if let name = user.name {
-							Text(name)
-								.font(.headline)
-								.fontWeight(.medium)
+							HStack {
+								Text(name)
+									.font(.headline)
+									.fontWeight(.medium)
+								VerificationBadgeView(verified: user.verified)
+							}
 						}
-						Text("@\(user.handle)")
-							.font(user.name != nil ? .footnote : .headline)
-							.fontWeight(user.name != nil ? .regular : .medium)
-							.foregroundStyle(user.name != nil ? .secondary : .primary)
+						HStack {
+							Text("@\(user.handle)")
+								.font(user.name != nil ? .footnote : .headline)
+								.fontWeight(user.name != nil ? .regular : .medium)
+								.foregroundStyle(user.name != nil ? .secondary : .primary)
+							if user.name == nil {
+								VerificationBadgeView(verified: user.verified)
+							}
+						}
 					}
 					.lineLimit(1)
 					Spacer(minLength: 0)
