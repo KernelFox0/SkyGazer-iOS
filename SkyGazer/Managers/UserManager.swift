@@ -330,4 +330,27 @@ class UserManager {
 			blockingURI: user.viewer?.blockingURI
 		)
 	}
+	
+	func getMinimalUserDetails(did: String) async -> User? {
+		guard let ATProto else { return nil }
+		
+		guard let profile = try? await ATProto.getProfile(for: did) else { return nil }
+		
+		return User(
+			did: profile.actorDID,
+			name: profile.displayName ?? "",
+			handle: profile.actorHandle,
+			followers: profile.followerCount ?? 0,
+			following: profile.followCount ?? 0,
+			postCount: profile.postCount ?? 0,
+			bioText: "",
+			profileImage: profile.avatarImageURL,
+			isFollowedBy: false,
+			isBlocked: false,
+			blockingURI: nil,
+			isMuted: false,
+			userLabels: [],
+			verified: nil
+		)
+	}
 }
