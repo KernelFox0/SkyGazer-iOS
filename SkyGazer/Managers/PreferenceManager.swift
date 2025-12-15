@@ -67,4 +67,16 @@ class PreferenceManager {
 			}
 		}
 	}
+	
+	var defaultPostLocaleIdentifier: String? { // If nil, current device locale should be used
+		get {
+			access(keyPath: \.defaultPostLocaleIdentifier)
+			return UserDefaults.standard.string(forKey: "defaultPostLocaleIdentifier")
+		}
+		set {
+			withMutation(keyPath: \.defaultPostLocaleIdentifier) {
+				UserDefaults.standard.setValue(newValue, forKey: "defaultPostLocaleIdentifier")
+			}
+		}
+	}
 }
