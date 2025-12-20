@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AllowRepliesRuleset {
+enum AllowRepliesRuleset: Equatable {
 	case mentioned
 	case followers
 	case following
