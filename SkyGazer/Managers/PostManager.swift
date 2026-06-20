@@ -153,6 +153,9 @@ class PostManager {
 					)
 				case .unknown(_, _):
 					break
+				case .embedGalleryView(_):
+					// TODO: Do something
+					break
 				}
 			case .embedVideoView(let embed):
 				model.video = EmbedVideo(
@@ -162,6 +165,9 @@ class PostManager {
 					aspectRatio: embed.aspectRatio
 				)
 			case .unknown(_, _):
+				break
+			case .embedGalleryView(_):
+				// TODO: Do something
 				break
 			}
 		}
@@ -333,9 +339,15 @@ class PostManager {
 				)
 			case .unknown(_, _):
 				break
+			case .embedGalleryView(_):
+				// TODO: Do something
+				break
 			}
 			model.record = extractRecordEmbeds(from: embed.record.record)
 		case .unknown(_, _):
+			break
+		case .embedGalleryView(_):
+			// TODO: Do something
 			break
 		}
 		
