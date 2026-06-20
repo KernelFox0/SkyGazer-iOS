@@ -98,9 +98,11 @@ struct PostCreationScreenView: View {
 	@State private var selectedLocale: Locale = Locale(identifier: Locale.current.language.languageCode?.identifier ?? "en")
 	@State private var threadgate = ThreadGate()
 	@State private var showThreadgateEditor: Bool = false
+	@State private var postProgress: Bool = false
 	
 	@Environment(\.dismiss) private var dismiss
 	@Environment(PreferenceManager.self) private var preferenceManager
+	@Environment(AppMessageManager.self) private var appMessageManager
 	
     var body: some View {
 		VStack(alignment: .leading) {
@@ -115,12 +117,36 @@ struct PostCreationScreenView: View {
 				Text("New Post")
 					.fontWeight(.semibold)
 				Spacer(minLength: 0)
-				Button("Post") {
-					HapticsManager.impact(style: .medium)
+				if !postProgress {
+					Button("Post") {
+						HapticsManager.impact(style: .medium)
+						postProgress = true
+						Task {
+							do {
+								if let result = try await PostManager.shared.createPost(text: text, locales: [selectedLocale], threadgate: threadgate) {
+									await MainActor.run {
+										appMessageManager.message = ActionedAppMessage(message: "Posted!", icon: "checkmark", actionTitle: "View", action: {
+											print("This should show the freshly made post. And it will, once it's implemented :3\nPost URI: \(result)")
+										})
+										dismiss()
+									}
+								} else {
+									throw AppError(type: .post, message: "Empty URI Response")
+								}
+							}
+							catch {
+								await MainActor.run {
+									appMessageManager.error = AppError(type: .post, localizedMessage: error.localizedDescription)
+								}
+							}
+						}
+					}
+					.tint(text.isEmpty || text.count > 300 ? nil : preferenceManager.accentColor) // Attachment checking here
+					.buttonStyle(.glassProminent)
+					.disabled(text.isEmpty || text.count > 300) // Attachment checking here
+				} else {
+					ProgressView()
 				}
-				.tint(text.isEmpty || false ? nil : preferenceManager.accentColor) // Attachment checking here
-				.buttonStyle(.glassProminent)
-				.disabled(text.isEmpty || false) // Attachment checking here
 			}
 			.padding([.top, .horizontal])
 			Divider()

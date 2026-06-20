@@ -547,4 +547,43 @@ class PostManager {
 		
 		return parseContentPreferences(on: posts).compactMap { $0 as? FeedPost }
 	}
+	
+	/// Creates a post record
+	/// - Returns: if successful, returns the created post's URI in String? format, otherwise nil
+	func createPost(text: String, locales: [Locale], threadgate: ThreadGate) async throws -> String? {
+		guard let atBluesky = user.ATBluesky else { return nil }
+		
+		do {
+			
+			let reference = try await atBluesky.createPostRecord(text: text, locales: locales, embed: nil, labels: nil)
+			
+			// Convert Threadgate to Bluesky lexicon format
+			var gate: [ATProtoBluesky.ThreadgateAllowRule]? = nil
+			if !threadgate.allowReplies { gate = [] }
+			else if !threadgate.rules.isEmpty {
+				gate = []
+				for rule in threadgate.rules {
+					switch rule {
+					case .mentioned:
+						gate?.append(.allowMentions)
+					case .followers:
+						gate?.append(.allowFollowers)
+					case .following:
+						gate?.append(.allowFollowing)
+					case .list(let listURI):
+						gate?.append(.allowList(listURI: listURI))
+					}
+				}
+			}
+			
+			let _ = try await atBluesky.createThreadgateRecord(postURI: reference.recordURI, replyControls: gate)
+			let _ = try await atBluesky.createPostgateRecord(postURI: reference.recordURI, embeddingRules: threadgate.allowQuotes ? nil : [.disable])
+			
+			return reference.recordURI
+		} catch {
+			print(error)
+			print(error.localizedDescription)
+			return nil
+		}
+	}
 }
