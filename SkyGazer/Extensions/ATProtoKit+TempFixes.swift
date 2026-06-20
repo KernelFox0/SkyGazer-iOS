@@ -144,7 +144,7 @@ extension ATProtoBluesky {
 			}
 		}
 		
-		let finalThreadgateAllowArray = threadgateAllowArray//.isEmpty ? nil : threadgateAllowArray
+		let finalThreadgateAllowArray = replyControls == nil ? nil : threadgateAllowArray
 		
 		let threadgateRecord = AppBskyLexicon.Feed.ThreadgateRecord(
 			postURI: postURI,
